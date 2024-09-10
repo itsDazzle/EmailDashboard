@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mail Dashboard Exam</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+
+    <link href="./style.css" rel="stylesheet" />
+  </head>
+
+  <body>
+    <div class="container">
+      <div class="row">
+        <div class="navigationMenu mobileVisible">
+          <button
+            class="btn btn-default"
+            onclick="MailScript.visibleDrawer(true)"
+          >
+            <i class="bi bi-list"></i>
+          </button>
+          <button
+            id="openSendModal"
+            class="btn btn-default open-modal"
+            data-bs-toggle="modal"
+            data-bs-target="#mailModal"
+          >
+            <i class="bi bi-pencil-fill"></i>
+          </button>
+        </div>
+
+        <div class="drawer col-md-3 show" id="drawer">
+          <button
+            id="closeDrawer"
+            onclick="MailScript.visibleDrawer(false)"
+            class="btn btn-default mobileVisible"
+          >
+            Close <i class="bi bi-x"></i>
+          </button>
+          <button
+            class="btn btn-default open-modal"
+            data-bs-toggle="modal"
+            data-bs-target="#mailModal"
+          >
+            New Message <i class="bi bi-pencil me-2"></i>
+          </button>
+          <div class="accordion" id="mailAccordion">
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingInbox">
+                <button
+                  class="accordion-button"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapseInbox"
+                  aria-expanded="true"
+                  aria-controls="collapseInbox"
+                >
+                  <i class="bi bi-inbox me-2"></i>
+                  Inbox
+                  <span class="count"></span>
+                  <i class="bi bi bi-caret-down-fill me-2"></i>
+                </button>
+              </h2>
+              <div
+                id="collapseInbox"
+                class="accordion-collapse collapse show"
+                aria-labelledby="headingInbox"
+                data-bs-parent="#mailAccordion"
+              >
+                <div class="accordion-body">
+                  <ul id="inboxList" class="list-group"></ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingSent">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapseSent"
+                  aria-expanded="false"
+                  aria-controls="collapseSent"
+                >
+                  <i class="bi bi-send me-2"></i>
+                  Sent
+                  <span class="count"></span>
+                  <i class="bi bi bi-caret-down-fill me-2"></i>
+                </button>
+              </h2>
+              <div
+                id="collapseSent"
+                class="accordion-collapse collapse"
+                aria-labelledby="headingSent"
+                data-bs-parent="#mailAccordion"
+              >
+                <div class="accordion-body">
+                  <ul id="sentList" class="list-group"></ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingDrafts">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapseDrafts"
+                  aria-expanded="false"
+                  aria-controls="collapseDrafts"
+                >
+                  <i class="bi bi-file-earmark-text me-2"></i>
+                  Drafts
+                  <span class="count"></span>
+                  <i class="bi bi bi-caret-down-fill me-2"></i>
+                </button>
+              </h2>
+              <div
+                id="collapseDrafts"
+                class="accordion-collapse collapse"
+                aria-labelledby="headingDrafts"
+                data-bs-parent="#mailAccordion"
+              >
+                <div class="accordion-body">
+                  <ul id="draftList" class="list-group"></ul>
+                </div>
+              </div>
+            </div>
+
+            <div class="accordion-item">
+              <h2 class="accordion-header" id="headingTrash">
+                <button
+                  class="accordion-button collapsed"
+                  type="button"
+                  data-bs-toggle="collapse"
+                  data-bs-target="#collapseTrash"
+                  aria-expanded="false"
+                  aria-controls="collapseTrash"
+                >
+                  <i class="bi bi-trash me-2"></i>
+                  Trash
+                  <span class="count"></span>
+                  <i class="bi bi bi-caret-down-fill me-2"></i>
+                </button>
+              </h2>
+              <div
+                id="collapseTrash"
+                class="accordion-collapse collapse"
+                aria-labelledby="headingTrash"
+                data-bs-parent="#mailAccordion"
+              >
+                <div class="accordion-body">
+                  <ul id="trashList" class="list-group"></ul>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-9">
+          <div id="messageDetails" style="display: none">
+            <img
+              id="messageImage"
+              src=""
+              alt="Message Image"
+              style="width: 100px; height: 100px"
+            />
+            <h2 id="messageSubject"></h2>
+            <div>
+              <h3>
+                <span><i class="bi bi-person"></i> From <span id="messageFrom"></span></span>
+                <span><i class="bi bi-clock"></i> <span id="messageDate"></span></span>
+              </h3>
+            </div>
+            <button id="replyButton">
+              Reply<i class="bi bi-reply-fill"></i>
+            </button>
+            <button id="forwardButton">
+              Forward<i class="bi bi-forward-fill"></i>
+            </button>
+            <hr />
+            <p id="messageContent"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div
+      class="modal fade"
+      id="mailModal"
+      tabindex="-1"
+      aria-labelledby="mailModalLabel"
+      aria-hidden="true"
+    >
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="mailModalLabel">Send Mail</h5>
+            <button
+              type="button"
+              class="btn btn-link closeModalButton"
+              data-bs-dismiss="modal"
+            >
+              <i class="bi bi-x"></i>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="mailForm">
+              <div class="mb-3">
+                <label for="mailTo" class="form-label">To</label>
+                <input type="text" class="form-control" id="mailTo" required />
+                <div class="invalid-feedback">Please provide a recipient.</div>
+              </div>
+              <div class="mb-3">
+                <label for="mailFrom" class="form-label">From</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="mailFrom"
+                  required
+                />
+                <div class="invalid-feedback">Please provide a sender.</div>
+              </div>
+              <div class="mb-3">
+                <label for="mailSubject" class="form-label">Subject</label>
+                <input
+                  type="text"
+                  class="form-control"
+                  id="mailSubject"
+                  required
+                />
+                <div class="invalid-feedback">Please provide a subject.</div>
+              </div>
+              <div class="mb-3">
+                <label for="mailContent" class="form-label">Content</label>
+                <textarea
+                  class="form-control"
+                  id="mailContent"
+                  rows="4"
+                  required
+                ></textarea>
+                <div class="invalid-feedback">Please provide content.</div>
+              </div>
+              <div class="modal-footer">
+                <button
+                  type="button"
+                  class="btn btn-danger"
+                  data-bs-dismiss="modal"
+                >
+                  Cancel <i class="bi bi-x me-2"></i>
+                </button>
+                <button
+                  type="button"
+                  class="btn btn-primary"
+                  id="sendMailButton"
+                  onclick="MailScript.addOrEdit()"
+                >
+                  Send <i class="bi bi-send me-2"></i>
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="position-fixed top-0 end-0 p-3" style="z-index: 11">
+      <div
+        id="successToast"
+        class="toast align-items-center text-white bg-success border-0"
+        role="alert"
+        aria-live="assertive"
+        aria-atomic="true"
+      >
+        <div class="d-flex">
+          <div class="toast-body">Your action was successful!</div>
+          <button
+            type="button"
+            class="btn-close btn-close-white me-2 m-auto"
+            data-bs-dismiss="toast"
+            aria-label="Close"
+          ></button>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+
+    <script src="./script.js"></script>
+  </body>
+</html>
